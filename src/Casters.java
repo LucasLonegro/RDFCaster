@@ -40,12 +40,14 @@ public class Casters {
         String examiner = sanitize(scanner.next());
 
         return List.of(("""
-                ex:CourseInstance_%s      a ex:CourseInstances ;
-                ex:instanceId     "%s" ;
-                ex:academicYear           "%s" ;
-                ex:studyPeriod           "%s" .""").formatted(instanceId, instanceId, academicYear, studyPeriod),
-                ("ex:%s    ex:examinerIn ex:CourseInstance_%s .").formatted(examiner, instanceId));
-    }
+                ex:CourseInstance_%s a ex:CourseInstances ;
+                    ex:instanceId "%s" ;
+                    ex:academicYear "%s" ;
+                    ex:studyPeriod "%s" ;
+                    ex:hasCourse ex:Course_%s .
+                    """).formatted(instanceId, instanceId, academicYear, studyPeriod, courseCode),
+                    ("ex:SeniorTeacher_%s ex:examinerIn ex:CourseInstance_%s .").formatted(examiner, instanceId));
+}
 
     public static List<String> coursePlanningsCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
