@@ -136,7 +136,11 @@ public class Casters {
         String departmentName = scanner.next();
         String divisionName = scanner.next();
 
-        return List.of(line);
+        return List.of(("""
+                        ex:SeniorTeacher_%s      a ex:Programmes ;
+                        ex:teacherId     ex:%s ;
+                        ex:name     ex:%s .""").formatted(teacherId, teacherId, teacherName),
+                ("ex:%s    ex:isInDivision ex:%s .").formatted(teacherId, divisionName));
     }
 
     public static List<String> studentsCaster(String line) {
