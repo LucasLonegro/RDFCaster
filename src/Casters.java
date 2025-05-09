@@ -3,11 +3,11 @@ import java.util.Scanner;
 
 public class Casters {
 
-    public static List<String> noopCaster(String line){
+    public static List<String> noopCaster(String line) {
         return List.of(line);
     }
 
-    public static List<String> assignedHoursCaster(String line){
+    public static List<String> assignedHoursCaster(String line) {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String courseCode = scanner.next();
         String studyPeriod = scanner.next();
@@ -24,7 +24,7 @@ public class Casters {
                 ex:hasLog         ex:%s .""").formatted(teacherId, courseInstance, hours, teacherId, courseInstance));
     }
 
-    public static List<String> courseInstancesCaster(String line){
+    public static List<String> courseInstancesCaster(String line) {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String courseCode = scanner.next();
         String studyPeriod = scanner.next();
@@ -33,14 +33,15 @@ public class Casters {
         String examiner = scanner.next();
 
         return List.of(("""
-                ex:CourseInstance_%s      a ex:CourseInstances ;
-                ex:instanceId     ex:%s ;
-                ex:academicYear           ex:%s ;
-                ex:studyPeriod           ex:%s .""").formatted(instanceId,instanceId,academicYear,studyPeriod),
-                ("ex:%s    ex:examinerIn ex:%s .").formatted(examiner,instanceId));
+                        ex:CourseInstance_%s      a ex:CourseInstances ;
+                        ex:instanceId     ex:%s ;
+                        ex:academicYear           ex:%s ;
+                        ex:studyPeriod           ex:%s .""").formatted(instanceId, instanceId, academicYear, studyPeriod),
+                ("ex:%s    ex:examinerIn ex:%s .").formatted(examiner, instanceId),
+                ("ex:%s    ex:instanceOf ex:%s .").formatted(instanceId, courseCode));
     }
 
-    public static List<String> coursePlanningsCaster(String line){
+    public static List<String> coursePlanningsCaster(String line) {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String course = scanner.next();
         String plannedNumberOfStudents = scanner.next();
@@ -51,10 +52,10 @@ public class Casters {
                 ex:CourseInstance_%s      a ex:CourseInstances ;
                 ex:planningNumStudents     "%s"^^xsd:integer ;
                 ex:assistantHours           "%s"^^xsd:decimal ;
-                ex:seniorHours           "%s"^^xsd:decimal .""").formatted(course,plannedNumberOfStudents,assistantHours,seniorHours));
+                ex:seniorHours           "%s"^^xsd:decimal .""").formatted(course, plannedNumberOfStudents, assistantHours, seniorHours));
     }
 
-    public static List<String> coursesCaster(String line){
+    public static List<String> coursesCaster(String line) {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String courseName = scanner.next();
         String courseCode = scanner.next();
@@ -64,10 +65,18 @@ public class Casters {
         String division = scanner.next();
         String ownedBy = scanner.next();
 
-        return List.of(line);
+        return List.of(("""
+                        ex:Course_%s      a ex:Courses ;
+                        ex:courseCode     ex:%s ;
+                        ex:courseName           ex:%s ;
+                        ex:level           ex:%s ;
+                        ex:credits           ex:%s .""").formatted(courseCode, courseCode, courseName, level, credits),
+                ("ex:%s    ex:isOfDivision ex:%s .").formatted(courseCode, division),
+                ("ex:%s    ex:belongsToDivision ex:%s .").formatted(department, division), // note: this will create duplicated triples. GraphDB automatically deduplicates them, the performance overhead is negligible compared to doing filtered inserts
+                ("ex:%s    ex:ownedBy ex:%s .").formatted(courseCode, ownedBy));
     }
 
-    public static List<String> programmeCoursesCaster(String line){
+    public static List<String> programmeCoursesCaster(String line) {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String programmeCode = scanner.next();
         String studyYear = scanner.next();
@@ -78,7 +87,7 @@ public class Casters {
         return List.of(line);
     }
 
-    public static List<String> programmesCaster(String line){
+    public static List<String> programmesCaster(String line) {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String programmeName = scanner.next();
         String programmeCode = scanner.next();
@@ -88,7 +97,7 @@ public class Casters {
         return List.of(line);
     }
 
-    public static List<String> registrationsCaster(String line){
+    public static List<String> registrationsCaster(String line) {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String courseInstance = scanner.next();
         String studentId = scanner.next();
@@ -98,7 +107,7 @@ public class Casters {
         return List.of(line);
     }
 
-    public static List<String> reportedHoursCaster(String line){
+    public static List<String> reportedHoursCaster(String line) {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String courseCode = scanner.next();
         String teacherId = scanner.next();
@@ -110,7 +119,7 @@ public class Casters {
                 """).formatted(teacherId, courseCode, hours));
     }
 
-    public static List<String> seniorTeachersCaster(String line){
+    public static List<String> seniorTeachersCaster(String line) {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String teacherName = scanner.next();
         String teacherId = scanner.next();
@@ -120,7 +129,7 @@ public class Casters {
         return List.of(line);
     }
 
-    public static List<String> studentsCaster(String line){
+    public static List<String> studentsCaster(String line) {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String studentName = scanner.next();
         String studentId = scanner.next();
@@ -131,7 +140,7 @@ public class Casters {
         return List.of(line);
     }
 
-    public static List<String> teachingAssistantsCaster(String line){
+    public static List<String> teachingAssistantsCaster(String line) {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String teacherName = scanner.next();
         String teacherId = scanner.next();
