@@ -22,7 +22,7 @@ public class Casters {
         String academicYear = scanner.next();
         String teacherId = scanner.next();
         String hours = scanner.next();
-        String courseInstance = scanner.next();
+        String courseInstance = sanitize(scanner.next());
 
         return List.of(("""
                 ex:HoursLog_%s_%s      a ex:HoursLog ;
@@ -37,7 +37,7 @@ public class Casters {
         String studyPeriod = scanner.next();
         String academicYear = scanner.next();
         String instanceId = scanner.next();
-        String examiner = scanner.next();
+        String examiner = sanitize(scanner.next());
 
         return List.of(("""
                 ex:CourseInstance_%s      a ex:CourseInstances ;
@@ -52,7 +52,7 @@ public class Casters {
         String course = scanner.next();
         String plannedNumberOfStudents = scanner.next();
         String seniorHours = scanner.next();
-        String assistantHours = scanner.next();
+        String assistantHours = sanitize(scanner.next());
 
         return List.of(("""
                 ex:CourseInstance_%s      a ex:CourseInstances ;
@@ -63,13 +63,13 @@ public class Casters {
 
     public static List<String> coursesCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
-        String courseName = sanitize(scanner.next());
+        String courseName = scanner.next();
         String courseCode = scanner.next();
         String credits = scanner.next();
-        String level = sanitize(scanner.next());
-        String department = sanitize(scanner.next());
-        String division = sanitize(scanner.next());
-        String ownedBy = scanner.next();
+        String level = scanner.next();
+        String department = scanner.next();
+        String division = scanner.next();
+        String ownedBy = sanitize(scanner.next());
 
         return List.of(("""
                 ex:Course_%s a ex:Course ;
@@ -102,10 +102,10 @@ public class Casters {
 
     public static List<String> programmesCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
-        String programmeName = sanitize(scanner.next());
+        String programmeName = scanner.next();
         String programmeCode = scanner.next();
-        String departmentName = sanitize(scanner.next());
-        String director = scanner.next();
+        String departmentName = scanner.next();
+        String director = sanitize(scanner.next());
 
         return List.of(("""
             ex:Programme_%s a ex:Programme ;
@@ -113,7 +113,7 @@ public class Casters {
                 ex:programmeName "%s" ;
                 ex:dept "%s" ;
                 ex:directedBy ex:SeniorTeacher_%s .
-            ex:SeniorTeacher_%s a ex:SeniorTeacher ;
+                ex:SeniorTeacher_%s a ex:SeniorTeacher ;
                 ex:teacherId "%s" .""").formatted(programmeCode, programmeCode, programmeName, departmentName, director, director, director));
     }
 
@@ -121,7 +121,7 @@ public class Casters {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String courseInstance = scanner.next();
         String studentId = scanner.next();
-        String status = sanitize(scanner.next());
+        String status = scanner.next();
         String grade = sanitize(scanner.next());
 
         return List.of(("""
@@ -134,7 +134,7 @@ public class Casters {
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String courseCode = scanner.next();
         String teacherId = scanner.next();
-        String hours = scanner.next();
+        String hours = sanitize(scanner.next());
 
         return List.of(("""
                 ex:HoursLog_%s_%s      a ex:HoursLog ;
@@ -143,9 +143,9 @@ public class Casters {
 
     public static List<String> seniorTeachersCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
-        String teacherName = sanitize(scanner.next());
+        String teacherName = scanner.next();
         String teacherId = scanner.next();
-        String departmentName = sanitize(scanner.next());
+        String departmentName = scanner.next();
         String divisionName = sanitize(scanner.next());
 
         return List.of(("""
@@ -158,17 +158,17 @@ public class Casters {
 
     public static List<String> studentsCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
-        String studentName = sanitize(scanner.next());
+        String studentName = scanner.next();
         String studentId = scanner.next();
         String programme = scanner.next();
         String year = scanner.next();
-        String graduated = scanner.next();
+        String graduated = sanitize(scanner.next());
 
         return List.of((""" 
         ex:Student_%s a ex:Student ;
             ex:studentId "%s" ;
             ex:name "%s" ;
-            ex:year "%s" ;
+            ex:year "%s"^^xsd:decimal ;
             ex:graduated "%s"^^xsd:boolean ;
             ex:enrolledIn ex:Programme_%s .
         """).formatted(studentId, studentId, studentName, year, graduated, programme));
@@ -176,9 +176,9 @@ public class Casters {
 
     public static List<String> teachingAssistantsCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
-        String teacherName = sanitize(scanner.next());
+        String teacherName = scanner.next();
         String teacherId = scanner.next();
-        String departmentName = sanitize(scanner.next());
+        String departmentName = scanner.next();
         String divisionName = sanitize(scanner.next());
 
         return List.of((""" 
