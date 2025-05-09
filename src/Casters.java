@@ -27,8 +27,8 @@ public class Casters {
         return List.of(("""
                 ex:HoursLog_%s_%s      a ex:HoursLog ;
                 ex:assignedHours  "%s"^^xsd:decimal ;
-                ex:logs           ex:%s ;
-                ex:hasLog         ex:%s .""").formatted(teacherId, courseInstance, hours, teacherId, courseInstance));
+                ex:logs           ex:TeachingAssistant_%s ;
+                ex:hasLog         ex:CourseInstance_%s .""").formatted(teacherId, courseInstance, hours, teacherId, courseInstance));
     }
 
     public static List<String> courseInstancesCaster(String line) {
@@ -42,8 +42,8 @@ public class Casters {
         return List.of(("""
                         ex:CourseInstance_%s      a ex:CourseInstances ;
                         ex:instanceId     ex:%s ;
-                        ex:academicYear           ex:%s ;
-                        ex:studyPeriod           ex:%s ;
+                        ex:academicYear           %s ;
+                        ex:studyPeriod           %s ;
                         ex:instanceOf ex:%s .""").formatted(instanceId, instanceId, academicYear, studyPeriod, courseCode),
                 ("ex:%s    ex:examinerIn ex:%s .").formatted(examiner, instanceId));
     }
@@ -193,17 +193,19 @@ public class Casters {
         String department = scanner.next();
         String division = sanitize(scanner.next());
 
-        return List.of((""" 
-                ex:TeachingAssistant_%s a ex:TeachingAssistant , ex:StaffMember ;
-                    ex:teacherId "%s" ;
-                    ex:name "%s" ;
-                    ex:isInDepartment ex:Department_%s ;
-                    ex:isInDivision ex:Division_%s .
-                
-                ex:Division_%s      a ex:Division ;
-                ex:belongsToDepartment ex:Department_%s ;
-                ex:divisionName     "%s" .
-                ex:Department_%s      a ex:Department ;
-                ex:departmentName     "%s" .""").formatted(teacherId, teacherId, teacherName, department, division, division, department, division, department, department));
+        return List.of(("""
+                 ex:TeachingAssistant_%s a ex:TeachingAssistant , ex:StaffMember ;
+                     ex:teacherId "%s" ;
+                     ex:name "%s" ;
+                     ex:isInDepartment ex:Department_%s ;
+                     ex:isInDivision ex:Division_%s .
+                \s
+                 ex:Students_%s ex:TAs ex:TeachingAssistant_%s .               \s
+                \s
+                 ex:Division_%s      a ex:Division ;
+                 ex:belongsToDepartment ex:Department_%s ;
+                 ex:divisionName     "%s" .
+                 ex:Department_%s      a ex:Department ;
+                 ex:departmentName     "%s" .""").formatted(teacherId, teacherId, teacherName, department, division, teacherId, teacherId, division, department, division, department, department));
     }
 }
