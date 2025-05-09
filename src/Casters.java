@@ -3,20 +3,27 @@ import java.util.Scanner;
 
 public class Casters {
 
-    public static List<String> noopCaster(String line) {
+    private static String sanitize(String value) {
+        return value
+            .replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+            .replace("\n", " ")
+            .replace("\r", "");
+    }
+
+    public static List<String> noopCaster(String line){
         return List.of(line);
     }
 
-    public static List<String> assignedHoursCaster(String line) {
+    public static List<String> assignedHoursCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String courseCode = scanner.next();
         String studyPeriod = scanner.next();
         String academicYear = scanner.next();
-
         String teacherId = scanner.next();
         String hours = scanner.next();
-
         String courseInstance = scanner.next();
+
         return List.of(("""
                 ex:HoursLog_%s_%s      a ex:HoursLog ;
                 ex:assignedHours  "%s"^^xsd:decimal ;
@@ -24,7 +31,7 @@ public class Casters {
                 ex:hasLog         ex:%s .""").formatted(teacherId, courseInstance, hours, teacherId, courseInstance));
     }
 
-    public static List<String> courseInstancesCaster(String line) {
+    public static List<String> courseInstancesCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String courseCode = scanner.next();
         String studyPeriod = scanner.next();
@@ -33,15 +40,14 @@ public class Casters {
         String examiner = scanner.next();
 
         return List.of(("""
-                        ex:CourseInstance_%s      a ex:CourseInstances ;
-                        ex:instanceId     ex:%s ;
-                        ex:academicYear           ex:%s ;
-                        ex:studyPeriod           ex:%s .""").formatted(instanceId, instanceId, academicYear, studyPeriod),
-                ("ex:%s    ex:examinerIn ex:%s .").formatted(examiner, instanceId),
-                ("ex:%s    ex:instanceOf ex:%s .").formatted(instanceId, courseCode));
+                ex:CourseInstance_%s      a ex:CourseInstances ;
+                ex:instanceId     "%s" ;
+                ex:academicYear           "%s" ;
+                ex:studyPeriod           "%s" .""").formatted(instanceId, instanceId, academicYear, studyPeriod),
+                ("ex:%s    ex:examinerIn ex:CourseInstance_%s .").formatted(examiner, instanceId));
     }
 
-    public static List<String> coursePlanningsCaster(String line) {
+    public static List<String> coursePlanningsCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String course = scanner.next();
         String plannedNumberOfStudents = scanner.next();
@@ -55,69 +61,76 @@ public class Casters {
                 ex:seniorHours           "%s"^^xsd:decimal .""").formatted(course, plannedNumberOfStudents, assistantHours, seniorHours));
     }
 
-    public static List<String> coursesCaster(String line) {
+    public static List<String> coursesCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
-        String courseName = scanner.next();
+        String courseName = sanitize(scanner.next());
         String courseCode = scanner.next();
         String credits = scanner.next();
-        String level = scanner.next();
-        String department = scanner.next();
-        String division = scanner.next();
+        String level = sanitize(scanner.next());
+        String department = sanitize(scanner.next());
+        String division = sanitize(scanner.next());
         String ownedBy = scanner.next();
 
         return List.of(("""
-                        ex:Course_%s      a ex:Courses ;
-                        ex:courseCode     ex:%s ;
-                        ex:courseName           ex:%s ;
-                        ex:level           ex:%s ;
-                        ex:credits           ex:%s .""").formatted(courseCode, courseCode, courseName, level, credits),
-                ("ex:%s    ex:isOfDivision ex:%s .").formatted(courseCode, division),
-                ("ex:%s    ex:belongsToDivision ex:%s .").formatted(department, division), // note: this will create duplicated triples. GraphDB automatically deduplicates them, the performance overhead is negligible compared to doing filtered inserts
-                ("ex:%s    ex:ownedBy ex:%s .").formatted(courseCode, ownedBy));
+                ex:Course_%s a ex:Course ;
+                    ex:courseCode "%s" ;
+                    ex:courseName "%s" ;
+                    ex:credits "%s"^^xsd:decimal ;
+                    ex:level "%s" ;
+                    ex:isOfDepartment "%s" ;
+                    ex:isOfDivision "%s" ;
+                    ex:ownedBy ex:Programme_%s .""").formatted(courseCode, courseCode, courseName, credits, level, department, division, ownedBy));
     }
 
-    public static List<String> programmeCoursesCaster(String line) {
+    public static List<String> programmeCoursesCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String programmeCode = scanner.next();
         String studyYear = scanner.next();
         String academicYear = scanner.next();
         String course = scanner.next();
-        String courseType = scanner.next();
+        String courseType = sanitize(scanner.next());
 
-        return List.of(line);
+        return List.of(("""
+                ex:Programme_%s ex:hasProgrammeCourse [
+                    a ex:ProgrammeCourse ;
+                    ex:course ex:Course_%s ;
+                    ex:academicYear "%s" ;
+                    ex:studyYear "%s" ;
+                    ex:courseType "%s"
+                ] .""").formatted(programmeCode, course, academicYear, studyYear, courseType));
     }
 
-    public static List<String> programmesCaster(String line) {
+    public static List<String> programmesCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
-        String programmeName = scanner.next();
+        String programmeName = sanitize(scanner.next());
         String programmeCode = scanner.next();
-        String departmentName = scanner.next();
+        String departmentName = sanitize(scanner.next());
         String director = scanner.next();
 
         return List.of(("""
-                        ex:Programme_%s      a ex:Programmes ;
-                        ex:programmeCode     ex:%s ;
-                        ex:programmeName     ex:%s .""").formatted(programmeCode, programmeCode, programmeName),
-                ("ex:%s    ex:directorIn ex:%s .").formatted(programmeCode, director),
-                ("ex:%s    ex:isOfDepartment ex:%s .").formatted(programmeCode, departmentName));
+            ex:Programme_%s a ex:Programme ;
+                ex:programmeCode "%s" ;
+                ex:programmeName "%s" ;
+                ex:dept "%s" ;
+                ex:directedBy ex:SeniorTeacher_%s .
+            ex:SeniorTeacher_%s a ex:SeniorTeacher ;
+                ex:teacherId "%s" .""").formatted(programmeCode, programmeCode, programmeName, departmentName, director, director, director));
     }
 
-    public static List<String> registrationsCaster(String line) {
+    public static List<String> registrationsCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String courseInstance = scanner.next();
         String studentId = scanner.next();
-        String status = scanner.next();
-        String grade = scanner.next();
+        String status = sanitize(scanner.next());
+        String grade = sanitize(scanner.next());
 
         return List.of(("""
-                ex:Registration_%s_%s      a ex:Registration ;
-                ex:grade  "%s"^^xsd:decimal ;
-                ex:status           ex:%s ;
-                ex:registeredTo           ex:%s ;
-                ex:registeredAs         ex:%s .""").formatted(courseInstance, studentId, grade, status, courseInstance, studentId));
+            ex:Student_%s ex:registeredIn ex:CourseInstance_%s .
+            ex:Student_%s ex:registrationStatus "%s" .
+            ex:Student_%s ex:grade "%s" .""").formatted(studentId, courseInstance, studentId, status, studentId, grade));
     }
 
-    public static List<String> reportedHoursCaster(String line) {
+    public static List<String> reportedHoursCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
         String courseCode = scanner.next();
         String teacherId = scanner.next();
@@ -125,48 +138,55 @@ public class Casters {
 
         return List.of(("""
                 ex:HoursLog_%s_%s      a ex:HoursLog ;
-                ex:reportedHours  "%s"^^xsd:decimal ;
-                """).formatted(teacherId, courseCode, hours));
+                ex:reportedHours  "%s"^^xsd:decimal .""").formatted(teacherId, courseCode, hours));
     }
 
-    public static List<String> seniorTeachersCaster(String line) {
+    public static List<String> seniorTeachersCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
-        String teacherName = scanner.next();
+        String teacherName = sanitize(scanner.next());
         String teacherId = scanner.next();
-        String departmentName = scanner.next();
-        String divisionName = scanner.next();
+        String departmentName = sanitize(scanner.next());
+        String divisionName = sanitize(scanner.next());
 
         return List.of(("""
-                        ex:SeniorTeacher_%s      a ex:SeniorTeacher ;
-                        ex:teacherId     ex:%s ;
-                        ex:name     ex:%s .""").formatted(teacherId, teacherId, teacherName),
-                ("ex:%s    ex:isInDivision ex:%s .").formatted(teacherId, divisionName));
+            ex:SeniorTeacher_%s a ex:SeniorTeacher , ex:StaffMember ;
+                ex:teacherId "%s" ;
+                ex:name "%s" ;
+                ex:isOfDepartment "%s" ;
+                ex:isOfDivision "%s" .""").formatted(teacherId, teacherId, teacherName, departmentName, divisionName));
     }
 
-    public static List<String> studentsCaster(String line) {
+    public static List<String> studentsCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
-        String studentName = scanner.next();
+        String studentName = sanitize(scanner.next());
         String studentId = scanner.next();
         String programme = scanner.next();
         String year = scanner.next();
         String graduated = scanner.next();
 
-        return List.of(("""
-                        ex:Students_%s      a ex:Students ;
-                        ex:studentId     ex:%s ;
-                        ex:graduated     "%s"^^xsd:boolean ;
-                        ex:year     ex:%s ;
-                        ex:name     ex:%s .""").formatted(studentId, studentId, graduated, year, studentName),
-                ("ex:%s    ex:isEnrolledIn ex:%s .").formatted(studentId, programme));
+        return List.of((""" 
+        ex:Student_%s a ex:Student ;
+            ex:studentId "%s" ;
+            ex:name "%s" ;
+            ex:year "%s" ;
+            ex:graduated "%s"^^xsd:boolean ;
+            ex:enrolledIn ex:Programme_%s .
+        """).formatted(studentId, studentId, studentName, year, graduated, programme));
     }
 
-    public static List<String> teachingAssistantsCaster(String line) {
+    public static List<String> teachingAssistantsCaster(String line){
         Scanner scanner = new Scanner(line).useDelimiter(",");
-        String teacherName = scanner.next();
+        String teacherName = sanitize(scanner.next());
         String teacherId = scanner.next();
-        String departmentName = scanner.next();
-        String divisionName = scanner.next();
+        String departmentName = sanitize(scanner.next());
+        String divisionName = sanitize(scanner.next());
 
-        return List.of(line);
+        return List.of((""" 
+        ex:TeachingAssistant_%s a ex:TeachingAssistant , ex:StaffMember ;
+            ex:teacherId "%s" ;
+            ex:name "%s" ;
+            ex:isOfDepartment "%s" ;
+            ex:isOfDivision "%s" .
+        """).formatted(teacherId, teacherId, teacherName, departmentName, divisionName));
     }
 }

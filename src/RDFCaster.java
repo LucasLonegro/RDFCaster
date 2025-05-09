@@ -7,16 +7,16 @@ public class RDFCaster {
 
     public static void cast(InputStream in, AsyncStringWriter out, Function<String, List<String>> rowCaster) {
         Scanner scanner = new Scanner(in).useDelimiter("\n");
-        scanner.next(); // ignore headers
+        if (scanner.hasNext()) scanner.next(); // skip headers
 
-        scanner.forEachRemaining((line) -> {
-            out.write(rowCaster.apply(line));
-        });
+        scanner.forEachRemaining((line) -> out.write(rowCaster.apply(line)));
     }
 
-    public static void castFile(String fileName, AsyncStringWriter asyncWriter, Function<String, List<String>> rowCaster) {
-        try (InputStream in = new FileInputStream(fileName)) {
-            cast(in, asyncWriter, Casters::noopCaster);
+    public static void castFile(String inputPath, String outputPath, Function<String, List<String>> rowCaster) {
+        try (InputStream in = new FileInputStream(inputPath);
+             Writer out = new FileWriter(outputPath)) {
+            AsyncStringWriter asyncWriter = new AsyncStringWriter(out);
+            cast(in, asyncWriter, rowCaster);
             asyncWriter.shutdown();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -24,37 +24,16 @@ public class RDFCaster {
     }
 
     public static void main(String[] args) {
-        try (Writer out = new FileWriter("out.txt");
-             InputStream assignedHours = new FileInputStream("Resources/Assigned_Hours.csv");
-             InputStream courseInstances = new FileInputStream("Resources/Course_Instances.csv");
-             InputStream coursePlannings = new FileInputStream("Resources/Course_plannings.csv");
-             InputStream courses = new FileInputStream("Resources/Courses.csv");
-             InputStream programmeCourses = new FileInputStream("Resources/Programme_Courses.csv");
-             InputStream programmes = new FileInputStream("Resources/Programmes.csv");
-             InputStream registrations = new FileInputStream("Resources/Registrations.csv");
-             InputStream reportedHours = new FileInputStream("Resources/Reported_Hours.csv");
-             InputStream seniorTeachers = new FileInputStream("Resources/Senior_Teachers.csv");
-             InputStream students = new FileInputStream("Resources/Students.csv");
-             InputStream teachingAssistants = new FileInputStream("Resources/Teaching_Assistants.csv");) {
-            AsyncStringWriter asyncWriter = new AsyncStringWriter(out);
-
-            cast(assignedHours, asyncWriter, Casters::assignedHoursCaster);
-            cast(courseInstances, asyncWriter, Casters::courseInstancesCaster);
-            cast(coursePlannings, asyncWriter, Casters::coursePlanningsCaster);
-            cast(courses, asyncWriter, Casters::coursesCaster);
-            cast(programmeCourses, asyncWriter, Casters::programmeCoursesCaster);
-            cast(programmes, asyncWriter, Casters::programmesCaster);
-            cast(registrations, asyncWriter, Casters::registrationsCaster);
-            cast(reportedHours, asyncWriter, Casters::reportedHoursCaster);
-            cast(seniorTeachers, asyncWriter, Casters::seniorTeachersCaster);
-            cast(students, asyncWriter, Casters::studentsCaster);
-            cast(teachingAssistants, asyncWriter, Casters::teachingAssistantsCaster);
-
-            asyncWriter.shutdown();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        castFile("Assignment3/RDFCaster/Resources/Assigned_Hours.csv", "assigned_hours.ttl", Casters::assignedHoursCaster);
+        castFile("Assignment3/RDFCaster/Resources/Course_Instances.csv", "course_instances.ttl", Casters::courseInstancesCaster);
+        castFile("Assignment3/RDFCaster/Resources/Course_plannings.csv", "course_plannings.ttl", Casters::coursePlanningsCaster);
+        castFile("Assignment3/RDFCaster/Resources/Courses.csv", "courses.ttl", Casters::coursesCaster);
+        castFile("Assignment3/RDFCaster/Resources/Programme_Courses.csv", "programme_courses.ttl", Casters::programmeCoursesCaster);
+        castFile("Assignment3/RDFCaster/Resources/Programmes.csv", "programmes.ttl", Casters::programmesCaster);
+        castFile("Assignment3/RDFCaster/Resources/Registrations.csv", "registrations.ttl", Casters::registrationsCaster);
+        castFile("Assignment3/RDFCaster/Resources/Reported_Hours.csv", "reported_hours.ttl", Casters::reportedHoursCaster);
+        castFile("Assignment3/RDFCaster/Resources/Senior_Teachers.csv", "senior_teachers.ttl", Casters::seniorTeachersCaster);
+        castFile("Assignment3/RDFCaster/Resources/Students.csv", "students.ttl", Casters::studentsCaster);
+        castFile("Assignment3/RDFCaster/Resources/Teaching_Assistants.csv", "teaching_assistants.ttl", Casters::teachingAssistantsCaster);
     }
-
 }
