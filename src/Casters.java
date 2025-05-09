@@ -45,7 +45,7 @@ public class Casters {
                     ex:academicYear "%s" ;
                     ex:studyPeriod "%s" ;
                     ex:hasCourse ex:Course_%s .
-                    """).formatted(instanceId, instanceId, academicYear, studyPeriod, courseCode),
+                """).formatted(instanceId, instanceId, academicYear, studyPeriod, courseCode),
                     ("ex:SeniorTeacher_%s ex:examinerIn ex:CourseInstance_%s .").formatted(examiner, instanceId));
 }
 
