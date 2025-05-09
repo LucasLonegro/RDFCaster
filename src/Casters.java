@@ -47,7 +47,11 @@ public class Casters {
         String seniorHours = scanner.next();
         String assistantHours = scanner.next();
 
-        return List.of(line);
+        return List.of(("""
+                ex:CourseInstance_%s      a ex:CourseInstances ;
+                ex:planningNumStudents     "%s"^^xsd:integer ;
+                ex:assistantHours           "%s"^^xsd:decimal ;
+                ex:seniorHours           "%s"^^xsd:decimal .""").formatted(course,plannedNumberOfStudents,assistantHours,seniorHours));
     }
 
     public static List<String> coursesCaster(String line){
