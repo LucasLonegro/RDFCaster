@@ -94,7 +94,12 @@ public class Casters {
         String departmentName = scanner.next();
         String director = scanner.next();
 
-        return List.of(line);
+        return List.of(("""
+                        ex:Programme_%s      a ex:Programmes ;
+                        ex:programmeCode     ex:%s ;
+                        ex:programmeName     ex:%s .""").formatted(programmeCode, programmeCode, programmeName),
+                ("ex:%s    ex:directorIn ex:%s .").formatted(programmeCode, director),
+                ("ex:%s    ex:isOfDepartment ex:%s .").formatted(programmeCode, departmentName));
     }
 
     public static List<String> registrationsCaster(String line) {
