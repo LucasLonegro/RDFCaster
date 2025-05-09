@@ -109,7 +109,12 @@ public class Casters {
         String status = scanner.next();
         String grade = scanner.next();
 
-        return List.of(line);
+        return List.of(("""
+                ex:Registration_%s_%s      a ex:Registration ;
+                ex:grade  "%s"^^xsd:decimal ;
+                ex:status           ex:%s ;
+                ex:registeredTo           ex:%s ;
+                ex:registeredAs         ex:%s .""").formatted(courseInstance, studentId, grade, status, courseInstance, studentId));
     }
 
     public static List<String> reportedHoursCaster(String line) {
