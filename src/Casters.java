@@ -116,8 +116,8 @@ public class Casters {
                         ex:Programme_%s      a ex:Programmes ;
                                 ex:programmeCode     ex:%s ;
                                 ex:programmeName     "%s" .""").formatted(programmeCode, programmeCode, programmeName),
-                ("ex:%s    ex:directorIn ex:%s .").formatted(director, programmeCode),
-                ("ex:%s    ex:isOfDepartment \"Department_%s\" .").formatted(programmeCode, departmentName));
+                ("ex:SeniorTeacher_%s    ex:directorIn ex:Programme_%s .").formatted(director, programmeCode),
+                ("ex:Programme_%s    ex:isOfDepartment \"Department_%s\" .").formatted(programmeCode, departmentName));
     }
 
     public static List<String> registrationsCaster(String line) {
@@ -131,8 +131,8 @@ public class Casters {
                 ex:Registration_%s_%s      a ex:Registration ;
                 ex:grade  "%s"^^xsd:decimal ;
                 ex:status           "%s" ;
-                ex:registeredTo           ex:%s ;
-                ex:registeredAs         ex:%s .""").formatted(courseInstance, studentId, grade, status, courseInstance, studentId));
+                ex:registeredTo           ex:CourseInstances_%s ;
+                ex:registeredAs         ex:Students_%s .""").formatted(courseInstance, studentId, grade, status, courseInstance, studentId));
     }
 
     public static List<String> reportedHoursCaster(String line) {
