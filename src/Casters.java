@@ -137,7 +137,7 @@ public class Casters {
         String divisionName = scanner.next();
 
         return List.of(("""
-                        ex:SeniorTeacher_%s      a ex:Programmes ;
+                        ex:SeniorTeacher_%s      a ex:SeniorTeacher ;
                         ex:teacherId     ex:%s ;
                         ex:name     ex:%s .""").formatted(teacherId, teacherId, teacherName),
                 ("ex:%s    ex:isInDivision ex:%s .").formatted(teacherId, divisionName));
@@ -151,7 +151,13 @@ public class Casters {
         String year = scanner.next();
         String graduated = scanner.next();
 
-        return List.of(line);
+        return List.of(("""
+                        ex:Students_%s      a ex:Students ;
+                        ex:studentId     ex:%s ;
+                        ex:graduated     "%s"^^xsd:boolean ;
+                        ex:year     ex:%s ;
+                        ex:name     ex:%s .""").formatted(studentId, studentId, graduated, year, studentName),
+                ("ex:%s    ex:isEnrolledIn ex:%s .").formatted(studentId, programme));
     }
 
     public static List<String> teachingAssistantsCaster(String line) {
