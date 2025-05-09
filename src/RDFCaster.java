@@ -38,17 +38,17 @@ public class RDFCaster {
              InputStream teachingAssistants = new FileInputStream("Resources/Teaching_Assistants.csv");) {
             AsyncStringWriter asyncWriter = new AsyncStringWriter(out);
 
-            cast(assignedHours, asyncWriter, Casters::noopCaster);
-            cast(courseInstances, asyncWriter, Casters::noopCaster);
-            cast(coursePlannings, asyncWriter, Casters::noopCaster);
-            cast(courses, asyncWriter, Casters::noopCaster);
-            cast(programmeCourses, asyncWriter, Casters::noopCaster);
-            cast(programmes, asyncWriter, Casters::noopCaster);
-            cast(registrations, asyncWriter, Casters::noopCaster);
-            cast(reportedHours, asyncWriter, Casters::noopCaster);
-            cast(seniorTeachers, asyncWriter, Casters::noopCaster);
-            cast(students, asyncWriter, Casters::noopCaster);
-            cast(teachingAssistants, asyncWriter, Casters::noopCaster);
+            cast(assignedHours, asyncWriter, Casters::assignedHoursCaster);
+            cast(courseInstances, asyncWriter, Casters::courseInstancesCaster);
+            cast(coursePlannings, asyncWriter, Casters::coursePlanningsCaster);
+            cast(courses, asyncWriter, Casters::coursesCaster);
+            cast(programmeCourses, asyncWriter, Casters::programmeCoursesCaster);
+            cast(programmes, asyncWriter, Casters::programmesCaster);
+            cast(registrations, asyncWriter, Casters::registrationsCaster);
+            cast(reportedHours, asyncWriter, Casters::reportedHoursCaster);
+            cast(seniorTeachers, asyncWriter, Casters::seniorTeachersCaster);
+            cast(students, asyncWriter, Casters::studentsCaster);
+            cast(teachingAssistants, asyncWriter, Casters::teachingAssistantsCaster);
 
             asyncWriter.shutdown();
 

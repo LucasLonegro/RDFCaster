@@ -12,11 +12,16 @@ public class Casters {
         String courseCode = scanner.next();
         String studyPeriod = scanner.next();
         String academicYear = scanner.next();
+
         String teacherId = scanner.next();
         String hours = scanner.next();
-        String courseInstance = scanner.next();
 
-        return List.of(line);
+        String courseInstance = scanner.next();
+        return List.of(("""
+                ex:HoursLog_%s_%s      a ex:HoursLog ;
+                ex:assignedHours  "%s"^^xsd:decimal ;
+                ex:logs           ex:%s ;
+                ex:hasLog         ex:%s .""").formatted(teacherId, courseInstance, hours, teacherId, courseInstance));
     }
 
     public static List<String> courseInstancesCaster(String line){
@@ -90,7 +95,10 @@ public class Casters {
         String teacherId = scanner.next();
         String hours = scanner.next();
 
-        return List.of(line);
+        return List.of(("""
+                ex:HoursLog_%s_%s      a ex:HoursLog ;
+                ex:reportedHours  "%s"^^xsd:decimal ;
+                """).formatted(teacherId, courseCode, hours));
     }
 
     public static List<String> seniorTeachersCaster(String line){
