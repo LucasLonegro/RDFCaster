@@ -42,9 +42,9 @@ public class Casters {
         return List.of(("""
                         ex:CourseInstance_%s      a ex:CourseInstances ;
                         ex:instanceId     ex:%s ;
-                        ex:academicYear           %s ;
-                        ex:studyPeriod           %s ;
-                        ex:instanceOf ex:%s .""").formatted(instanceId, instanceId, academicYear, studyPeriod, courseCode),
+                        ex:academicYear           "%s" ;
+                        ex:studyPeriod           "%s" ;
+                        ex:instanceOf ex:Course_%s .""").formatted(instanceId, instanceId, academicYear, studyPeriod, courseCode),
                 ("ex:%s    ex:examinerIn ex:%s .").formatted(examiner, instanceId));
     }
 
