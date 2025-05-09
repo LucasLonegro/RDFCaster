@@ -32,7 +32,12 @@ public class Casters {
         String instanceId = scanner.next();
         String examiner = scanner.next();
 
-        return List.of(line);
+        return List.of(("""
+                ex:CourseInstance_%s      a ex:CourseInstances ;
+                ex:instanceId     ex:%s ;
+                ex:academicYear           ex:%s ;
+                ex:studyPeriod           ex:%s .""").formatted(instanceId,instanceId,academicYear,studyPeriod),
+                ("ex:%s    ex:examinerIn ex:%s .").formatted(examiner,instanceId));
     }
 
     public static List<String> coursePlanningsCaster(String line){
