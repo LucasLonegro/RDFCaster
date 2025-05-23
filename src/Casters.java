@@ -127,6 +127,8 @@ public class Casters {
         String status = scanner.next();
         String grade = sanitize(scanner.next());
 
+        if(grade.equals("")) grade = "-1";
+
         return List.of(("""
                 ex:Registration_%s_%s      a ex:Registration ;
                 ex:grade  "%s"^^xsd:decimal ;
@@ -176,6 +178,9 @@ public class Casters {
         String programme = scanner.next();
         String year = scanner.next();
         String graduated = sanitize(scanner.next());
+
+        if (graduated.equals("True")) graduated = "true";
+        else if (graduated.equals("False")) graduated = "false";
 
         return List.of((""" 
                         ex:Students_%s      a ex:Students ;
