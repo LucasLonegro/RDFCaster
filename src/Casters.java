@@ -1,7 +1,11 @@
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Casters {
+
+    private final static Map<String,String> ProgrammeNameToCode = new HashMap<>();
 
     private static String sanitize(String value) {
         return value
@@ -77,7 +81,7 @@ public class Casters {
                                 ex:courseCode     ex:%s ;
                                 ex:courseName           "%s" ;
                                 ex:level           "%s" ;
-                                ex:ownedBy "%s" ;
+                                ex:ownedBy ex:Programme_%s ;
                                 ex:isOfDivision ex:Division_%s ;
                                 ex:isCourseOfDepartment ex:Department_%s ;
                                 ex:credits           %s .
@@ -85,7 +89,7 @@ public class Casters {
                 ex:belongsToDepartment ex:Department_%s ;
                 ex:divisionName     "%s" .
                 ex:Department_%s      a ex:Department ;
-                ex:departmentName     "%s" .""").formatted(courseCode, courseCode, courseName, level, ownedBy, division, department, credits, division, department, division, department, department));
+                ex:departmentName     "%s" .""").formatted(courseCode, courseCode, courseName, level, ProgrammeNameToCode.get(ownedBy), division, department, credits, division, department, division, department, department));
     }
 
     public static List<String> programmeCoursesCaster(String line) {
@@ -111,6 +115,7 @@ public class Casters {
         String programmeCode = scanner.next();
         String departmentName = scanner.next();
         String director = sanitize(scanner.next());
+        ProgrammeNameToCode.put(programmeName, programmeCode);
 
         return List.of(("""
                         ex:Programme_%s      a ex:Programmes ;
