@@ -45,7 +45,7 @@ public class Casters {
                         ex:academicYear           "%s" ;
                         ex:studyPeriod           "%s" ;
                         ex:instanceOf ex:Course_%s .""").formatted(instanceId, instanceId, academicYear, studyPeriod, courseCode),
-                ("ex:%s    ex:examinerIn ex:%s .").formatted(examiner, instanceId));
+                ("ex:SeniorTeacher_%s    ex:examinerIn ex:CourseInstance_%s .").formatted(examiner, instanceId));
     }
 
     public static List<String> coursePlanningsCaster(String line) {
