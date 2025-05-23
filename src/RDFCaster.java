@@ -31,9 +31,9 @@ public class RDFCaster {
         castFile("Resources/Assigned_Hours.csv", "assigned_hours.ttl", Casters::assignedHoursCaster);
         castFile("Resources/Course_Instances.csv", "course_instances.ttl", Casters::courseInstancesCaster);
         castFile("Resources/Course_plannings.csv", "course_plannings.ttl", Casters::coursePlanningsCaster);
+        castFile("Resources/Programmes.csv", "programmes.ttl", Casters::programmesCaster);
         castFile("Resources/Courses.csv", "courses.ttl", Casters::coursesCaster);
         castFile("Resources/Programme_Courses.csv", "programme_courses.ttl", Casters::programmeCoursesCaster);
-        castFile("Resources/Programmes.csv", "programmes.ttl", Casters::programmesCaster);
         castFile("Resources/Registrations.csv", "registrations.ttl", Casters::registrationsCaster);
         castFile("Resources/Reported_Hours.csv", "reported_hours.ttl", Casters::reportedHoursCaster);
         castFile("Resources/Senior_Teachers.csv", "senior_teachers.ttl", Casters::seniorTeachersCaster);
