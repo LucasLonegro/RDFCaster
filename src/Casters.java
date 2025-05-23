@@ -133,7 +133,7 @@ public class Casters {
                 ex:Registration_%s_%s      a ex:Registration ;
                 ex:grade  "%s"^^xsd:decimal ;
                 ex:status           "%s" ;
-                ex:registeredTo           ex:CourseInstances_%s ;
+                ex:registeredTo           ex:CourseInstance_%s ;
                 ex:registeredAs         ex:Students_%s .""").formatted(courseInstance, studentId, grade, status, courseInstance, studentId));
     }
 
@@ -188,7 +188,7 @@ public class Casters {
                                 ex:graduated     "%s"^^xsd:boolean ;
                                 ex:year     %s ;
                                 ex:name     "%s" .""").formatted(studentId, studentId, graduated, year, studentName),
-                ("ex:%s    ex:isEnrolledIn ex:%s .").formatted(studentId, programme));
+                ("ex:Student_%s    ex:isEnrolledIn ex:Programme_%s .").formatted(studentId, programme));
     }
 
     public static List<String> teachingAssistantsCaster(String line) {
